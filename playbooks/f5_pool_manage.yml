@@ -114,27 +114,27 @@
         - snow_username is defined
         - snow_password is defined
 
-  rescue:
-    - name: Update ServiceNow change record — Failure
-      ansible.builtin.include_role:
-        name: snow_update
-      vars:
-        snow_update_state: "open"
-        snow_update_notes: >
-          Ansible AAP FAILED.
-          Action: {{ action | upper }}
-          VM: {{ vm_name }} ({{ vm_address }}:{{ vm_port }})
-          Pool: /{{ partition }}/{{ pool_name }}
-          Error: {{ ansible_failed_result.msg | default('Unknown error') }}
-          Timestamp: {{ lookup('pipe','date -u +%Y-%m-%dT%H:%M:%SZ') }}
-      when:
-        - snow_host is defined
-        - snow_username is defined
-        - snow_password is defined
-      ignore_errors: true
+    # rescue:
+    # - name: Update ServiceNow change record — Failure
+    #   ansible.builtin.include_role:
+    #     name: snow_update
+    #   vars:
+    #     snow_update_state: "open"
+    #     snow_update_notes: >
+    #       Ansible AAP FAILED.
+    #       Action: {{ action | upper }}
+    #       VM: {{ vm_name }} ({{ vm_address }}:{{ vm_port }})
+    #       Pool: /{{ partition }}/{{ pool_name }}
+    #       Error: {{ ansible_failed_result.msg | default('Unknown error') }}
+    #       Timestamp: {{ lookup('pipe','date -u +%Y-%m-%dT%H:%M:%SZ') }}
+    #   when:
+    #     - snow_host is defined
+    #     - snow_username is defined
+    #     - snow_password is defined
+    #   ignore_errors: true
 
-    - name: Fail the play with a clear error message
-      ansible.builtin.fail:
-        msg: >
-          F5 pool member management FAILED for change {{ change_number }}.
-          Action: {{ action | upper }}, VM: {{ vm_name }}, Pool: {{ pool_name }}.
+    # - name: Fail the play with a clear error message
+    #   ansible.builtin.fail:
+    #     msg: >
+    #       F5 pool member management FAILED for change {{ change_number }}.
+    #       Action: {{ action | upper }}, VM: {{ vm_name }}, Pool: {{ pool_name }}.
