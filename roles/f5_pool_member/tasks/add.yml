@@ -1,0 +1,35 @@
+---
+- name: Ensure node exists on F5
+  f5networks.f5_modules.bigip_node:
+    provider:    "{{ role_f5_provider }}"
+    partition:   "{{ role_partition }}"
+    name:        "{{ role_vm_name }}"
+    host:        "{{ role_vm_address }}"
+    state:       present
+    description: "Managed by AAP | Change: {{ role_change_number }}"
+  register: node_result
+
+- name: Show node creation result
+  ansible.builtin.debug:
+    msg: "Node '{{ role_vm_name }}' ({{ role_vm_address }}) — {{ 'Created' if node_result.changed else 'Already exists' }}"
+
+- name: Add node to F5 pool
+  f5networks.f5_modules.bigip_pool_member:
+    provider:       "{{ role_f5_provider }}"
+    partition:      "{{ role_partition }}"
+    pool:           "{{ role_pool_name }}"
+    name:           "{{ role_vm_name }}"
+    host:           "{{ role_vm_address }}"
+    port:           "{{ role_vm_port }}"
+    ratio:          "{{ role_ratio | default(f5_member_ratio_default) }}"
+    priority_group: "{{ role_priority | default(f5_member_priority_default) }}"
+    description:    "Managed by AAP | Change: {{ role_change_number }}"
+    state:          present
+  register: member_add_result
+
+- name: Confirm pool member addition
+  ansible.builtin.debug:
+    msg: >
+      Pool member '{{ role_vm_name }}:{{ role_vm_port }}'
+      {{ 'ADDED to' if member_add_result.changed else 'already in' }}
+      pool '/{{ role_partition }}/{{ role_pool_name }}'.

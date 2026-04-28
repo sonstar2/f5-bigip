@@ -1,0 +1,14 @@
+---
+# roles/f5_pool_member/defaults/main.yml
+# All variables overridable via extra_vars, inventory, or group_vars
+
+# F5 connection defaults
+f5_port:           443
+f5_validate_certs: true
+
+# Pool member defaults
+f5_member_ratio_default:    1
+f5_member_priority_default: 0
+
+# Graceful drain wait (seconds before removing a member from the pool)
+f5_drain_wait_seconds: 10

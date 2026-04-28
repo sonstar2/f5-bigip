@@ -1,0 +1,16 @@
+---
+# roles/f5_pool_member/meta/main.yml
+
+galaxy_info:
+  author:           "your-org"
+  description:      "Manage F5 BIG-IP LTM pool members (add/delete) triggered by AAP/EDA"
+  license:          "MIT"
+  min_ansible_version: "2.14"
+  platforms:
+    - name: EL
+      versions:
+        - "8"
+        - "9"
+
+dependencies: []
+# Collections are declared in collections/requirements.yml

@@ -1,0 +1,11 @@
+---
+# roles/f5_pool_member/tasks/main.yml
+# Entry point — delegates to add.yml or delete.yml
+
+- name: Include add tasks
+  ansible.builtin.include_tasks: add.yml
+  when: role_action == 'add'
+
+- name: Include delete tasks
+  ansible.builtin.include_tasks: delete.yml
+  when: role_action == 'delete'
