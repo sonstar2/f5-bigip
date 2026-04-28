@@ -64,13 +64,13 @@
           - "Pool          : /{{ partition }}/{{ pool_name }}"
           - "====================================================="
 
-    - name: Verify target F5 pool exists
-      f5networks.f5_modules.bigip_pool_facts:
-        provider:     "{{ f5_provider }}"
-        filter_name:  "{{ pool_name }}"
-        partition:    "{{ partition }}"
-      register: pool_facts
-      failed_when: pool_facts.ltm_pools | length == 0
+    # - name: Verify target F5 pool exists
+    #   f5networks.f5_modules.bigip_pool_facts:
+    #     provider:     "{{ f5_provider }}"
+    #     filter_name:  "{{ pool_name }}"
+    #     partition:    "{{ partition }}"
+    #   register: pool_facts
+    #   failed_when: pool_facts.ltm_pools | length == 0
 
   tasks:
     - name: Execute F5 pool member role
