@@ -20,36 +20,33 @@
       no_f5_tocks:    true
 
     # Normalised inputs
-    action:          "{{ snow_action | lower | trim }}"
-    vm_name:         "{{ snow_vm_name | trim }}"
-    vm_address:      "{{ snow_vm_address | trim }}"
-    vm_port:         "{{ snow_vm_port | int }}"
-    partition:       "{{ snow_f5_partition | default('Common') | trim }}"
-    pool_name:       "{{ snow_f5_pool_name | trim }}"
-    member_ratio:    "{{ snow_pool_member_ratio | default(1) | int }}"
-    member_priority: "{{ snow_pool_member_priority | default(0) | int }}"
-    change_number:   "{{ snow_change_number | trim }}"
+    action:          "{{ survey_action | lower | trim }}"
+    vm_name:         "{{ survey_vm_name | trim }}"
+    vm_address:      "{{ survey_vm_address | trim }}"
+    vm_port:         "{{ survey_vm_port | int }}"
+    partition:       "{{ survey_f5_partition | default('Common') | trim }}"
+    pool_name:       "{{ survey_f5_pool_name | trim }}"
+    member_ratio:    "{{ survey_pool_member_ratio | default(1) | int }}"
+    member_priority: "{{ survey_pool_member_priority | default(0) | int }}"
 
   pre_tasks:
     - name: Validate required input variables
       ansible.builtin.assert:
         that:
-          - snow_change_number is defined and snow_change_number | length > 0
-          - snow_action is defined and snow_action | lower in ['add', 'delete']
-          - snow_vm_name is defined and snow_vm_name | length > 0
-          - snow_vm_address is defined
-          - snow_vm_address | ansible.utils.ipaddr('address') is truthy
-          - snow_vm_port is defined
-          - snow_vm_port | int > 0 and snow_vm_port | int < 65536
-          - snow_f5_pool_name is defined and snow_f5_pool_name | length > 0
+          - survey_action is defined and survey_action | lower in ['add', 'delete']
+          - survey_vm_name is defined and survey_vm_name | length > 0
+          - survey_vm_address is defined
+          - survey_vm_address | ansible.utils.ipaddr('address') is truthy
+          - survey_vm_port is defined
+          - survey_vm_port | int > 0 and survey_vm_port | int < 65536
+          - survey_f5_pool_name is defined and survey_f5_pool_name | length > 0
           - f5_host is defined and f5_host | length > 0
           - f5_username is defined
           - f5_password is defined
         fail_msg: >
-          Input validation failed for change {{ snow_change_number | default('UNKNOWN') }}.
-          Required: snow_action (add|delete), snow_vm_name, snow_vm_address (valid IP),
-          snow_vm_port (1-65535), snow_f5_pool_name, f5_host, f5_username, f5_password.
-        success_msg: "Validation passed — Change: {{ snow_change_number }}, Action: {{ action | upper }}"
+          Required: survey_action (add|delete), survey_vm_name, survey_vm_address (valid IP),
+          surveyvm_port (1-65535), survey_f5_pool_name, f5_host, f5_username, f5_password.
+        success_msg: "Validation passed, Action: {{ action | upper }}"
 
     - name: Log job parameters
       ansible.builtin.debug:
@@ -57,7 +54,6 @@
           - "====================================================="
           - " F5 Pool Member Management"
           - "====================================================="
-          - "Change Number : {{ change_number }}"
           - "Action        : {{ action | upper }}"
           - "VM            : {{ vm_name }} ({{ vm_address }}:{{ vm_port }})"
           - "F5 Host       : {{ f5_host }}"
@@ -85,7 +81,6 @@
         role_pool_name:    "{{ pool_name }}"
         role_ratio:        "{{ member_ratio }}"
         role_priority:     "{{ member_priority }}"
-        role_change_number: "{{ change_number }}"
         role_f5_provider:  "{{ f5_provider }}"
 
   post_tasks:
@@ -98,21 +93,21 @@
         role_pool_name:   "{{ pool_name }}"
         role_f5_provider: "{{ f5_provider }}"
 
-    - name: Update ServiceNow change record — Success
-      ansible.builtin.include_role:
-        name: snow_update
-      vars:
-        snow_update_state: "implement"
-        snow_update_notes: >
-          Ansible AAP completed successfully.
-          Action: {{ action | upper }}
-          VM: {{ vm_name }} ({{ vm_address }}:{{ vm_port }})
-          Pool: /{{ partition }}/{{ pool_name }}
-          Timestamp: {{ lookup('pipe','date -u +%Y-%m-%dT%H:%M:%SZ') }}
-      when:
-        - snow_host is defined
-        - snow_username is defined
-        - snow_password is defined
+    # - name: Update ServiceNow change record — Success
+    #   ansible.builtin.include_role:
+    #     name: snow_update
+    #   vars:
+    #     snow_update_state: "implement"
+    #     snow_update_notes: >
+    #       Ansible AAP completed successfully.
+    #       Action: {{ action | upper }}
+    #       VM: {{ vm_name }} ({{ vm_address }}:{{ vm_port }})
+    #       Pool: /{{ partition }}/{{ pool_name }}
+    #       Timestamp: {{ lookup('pipe','date -u +%Y-%m-%dT%H:%M:%SZ') }}
+    #   when:
+    #     - snow_host is defined
+    #     - snow_username is defined
+    #     - snow_password is defined
 
     # rescue:
     # - name: Update ServiceNow change record — Failure
