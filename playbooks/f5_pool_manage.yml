@@ -17,7 +17,6 @@
       password:       "{{ f5_password }}"
       validate_certs: "{{ f5_validate_certs | default(false) }}"
       transport:      rest
-      no_f5_tocks:    true
 
     # Normalised inputs
     action:          "{{ survey_action | lower | trim }}"
