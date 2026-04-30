@@ -1,4 +1,14 @@
 ---
+- name: Ensure pool exists on F5
+  f5networks.f5_modules.bigip_pool:
+    provider:    "{{ role_f5_provider }}"
+    partition:   "{{ role_partition }}"
+    name:        "{{ role_pool_name }}"
+    lb_method: "{{ role_lb_method | default('round-robin') }}"
+    state:       present
+    description: "Managed by AAP | Change: {{ role_change_number }}"
+  register: node_result
+
 - name: Ensure node exists on F5
   f5networks.f5_modules.bigip_node:
     provider:    "{{ role_f5_provider }}"
