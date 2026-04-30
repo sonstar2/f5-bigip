@@ -2,24 +2,24 @@
 # roles/f5_pool_member/tasks/verify.yml
 # Post-change: fetch pool facts and save running config
 
-- name: Retrieve updated pool member facts
-  f5networks.f5_modules.bigip_pool_member_facts:
-    provider:  "{{ role_f5_provider }}"
-    pool:      "{{ role_pool_name }}"
-    partition: "{{ role_partition }}"
-  register: updated_pool_facts
+# - name: Retrieve updated pool member facts
+#   f5networks.f5_modules.bigip_pool_member_facts:
+#     provider:  "{{ role_f5_provider }}"
+#     pool:      "{{ role_pool_name }}"
+#     partition: "{{ role_partition }}"
+#   register: updated_pool_facts
 
-- name: Show final pool membership
-  ansible.builtin.debug:
-    msg:
-      - "====================================================="
-      - " Final Pool State: /{{ role_partition }}/{{ role_pool_name }}"
-      - "====================================================="
-      - "{{ updated_pool_facts.ltm_pool_members
-            | default([])
-            | map(attribute='full_path')
-            | list }}"
-      - "====================================================="
+# - name: Show final pool membership
+#   ansible.builtin.debug:
+#     msg:
+#       - "====================================================="
+#       - " Final Pool State: /{{ role_partition }}/{{ role_pool_name }}"
+#       - "====================================================="
+#       - "{{ updated_pool_facts.ltm_pool_members
+#             | default([])
+#             | map(attribute='full_path')
+#             | list }}"
+#       - "====================================================="
 
 - name: Save F5 running configuration
   f5networks.f5_modules.bigip_config:
