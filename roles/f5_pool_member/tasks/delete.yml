@@ -1,0 +1,57 @@
+---
+# roles/f5_pool_member/tasks/delete.yml
+
+- name: Disable pool member before removal (graceful drain)
+  f5networks.f5_modules.bigip_pool_member:
+    provider:  "{{ role_f5_provider }}"
+    partition: "{{ role_partition }}"
+    pool:      "{{ role_pool_name }}"
+    name:      "{{ role_vm_name }}"
+    host:      "{{ role_vm_address }}"
+    port:      "{{ role_vm_port }}"
+    state:     forced_offline
+  register: disable_result
+  failed_when: >
+    disable_result is failed and
+    'was not found' not in (disable_result.msg | default(''))
+
+- name: Wait for existing connections to drain
+  ansible.builtin.pause:
+    seconds: "{{ f5_drain_wait_seconds }}"
+    prompt: "Waiting {{ f5_drain_wait_seconds }}s for connections to drain from {{ role_vm_name }}:{{ role_vm_port }}..."
+  when: disable_result.changed | default(false)
+
+- name: Remove node from F5 pool
+  f5networks.f5_modules.bigip_pool_member:
+    provider:  "{{ role_f5_provider }}"
+    partition: "{{ role_partition }}"
+    pool:      "{{ role_pool_name }}"
+    name:      "{{ role_vm_name }}"
+    host:      "{{ role_vm_address }}"
+    port:      "{{ role_vm_port }}"
+    state:     absent
+  register: member_del_result
+
+- name: Confirm pool member removal
+  ansible.builtin.debug:
+    msg: >
+      Pool member '{{ role_vm_name }}:{{ role_vm_port }}'
+      {{ 'REMOVED from' if member_del_result.changed else 'was not in' }}
+      pool '/{{ role_partition }}/{{ role_pool_name }}'.
+
+- name: Remove F5 node object if no longer in any pool
+  f5networks.f5_modules.bigip_node:
+    provider:  "{{ role_f5_provider }}"
+    partition: "{{ role_partition }}"
+    name:      "{{ role_vm_name }}"
+    state:     absent
+  register: node_del_result
+  failed_when: >
+    node_del_result is failed and
+    'is referenced' not in (node_del_result.msg | default(''))
+
+- name: Show node cleanup result
+  ansible.builtin.debug:
+    msg: >
+      Node '{{ role_vm_name }}':
+      {{ 'Deleted' if node_del_result.changed else 'Retained (still used by other pools or not found)' }}
