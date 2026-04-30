@@ -28,6 +28,7 @@
     pool_name:       "{{ survey_f5_pool_name | trim }}"
     member_ratio:    "{{ survey_pool_member_ratio | default(1) | int }}"
     member_priority: "{{ survey_pool_member_priority | default(0) | int }}"
+    change_number:   "{{ survey_change_number }}"
 
   pre_tasks:
     - name: Validate required input variables
@@ -43,6 +44,7 @@
           - f5_host is defined and f5_host | length > 0
           - f5_username is defined
           - f5_password is defined
+          - survey_change_number is defined
         fail_msg: >
           Required: survey_action (add|delete), survey_vm_name, survey_vm_address (valid IP),
           surveyvm_port (1-65535), survey_f5_pool_name, f5_host, f5_username, f5_password.
@@ -82,6 +84,7 @@
         role_ratio:        "{{ member_ratio }}"
         role_priority:     "{{ member_priority }}"
         role_f5_provider:  "{{ f5_provider }}"
+        role_change_number: "{{ change_number }}"
 
   post_tasks:
     - name: Verify and save F5 config
