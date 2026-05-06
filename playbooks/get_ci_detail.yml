@@ -8,16 +8,22 @@
     - name: Retrieve a specific configuration item by sys_id
       servicenow.itsm.configuration_item_info:
         sys_id: "{{ survey_ci_sys_id }}"
-      register: result
+      register: ci_info
 
-    # - name: debug
-    #   debug:
-    #     msg: "{{ result }}"
+    - name: Retreive relations of a configuration item
+      servicenow.itsm.configuration_item_relations_info:
+        sys_id: "{{ survey_ci_sys_id }}"
+        classname: "Linux Server"
+      register: ci_relations_info
+
+    - name: debug
+      debug:
+        msg: "{{ ci_relations_info }}"
 
     - name: Set CI detail
       ansible.builtin.set_stats:
         data:
-          survey_vm_name: "{{ result.records[0].name }}"
-          survey_vm_address: "{{ result.records[0].ip_address }}"
-          survey_f5_pool_name: "{{ result.records[0].category }}"
+          survey_vm_name: "{{ ci_info.records[0].name }}"
+          survey_vm_address: "{{ ci_info.records[0].ip_address }}"
+          survey_f5_pool_name: "{{ ci_info.records[0].category }}"
         aggregate: no
