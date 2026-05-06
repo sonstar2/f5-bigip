@@ -2,3 +2,5 @@
 collections:
   - name: f5networks.f5_modules
     version: ">=1.27.0"
+
+  - name: servicenow.itsm

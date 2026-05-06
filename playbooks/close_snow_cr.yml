@@ -1,0 +1,19 @@
+---
+- name: Close SNow Change Request
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Update change request
+      servicenow.itsm.change_request:
+        state: closed
+        number: "{{ survey_change_number }}"
+        # assignment_group: "{{ assignment_group }}"
+        close_code: "successful"
+        close_notes: "Closed"
+      register: new_cr
+
+    - name: Show CR details
+      ansible.builtin.debug:
+        var: new_cr.diff.after
