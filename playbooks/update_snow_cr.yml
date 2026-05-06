@@ -5,6 +5,11 @@
   gather_facts: false
 
   tasks:
+    - name: Check the status
+      servicenow.itsm.change_request_info:
+        number: "{{ survey_change_number }}"
+      register: change_request_status
+
     - name: Wait for Change Request approval
       servicenow.itsm.change_request_info:
         number: "{{ survey_change_number }}"
