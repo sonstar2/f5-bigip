@@ -13,7 +13,7 @@
     - name: Retreive relations of a configuration item
       servicenow.itsm.configuration_item_relations_info:
         sys_id: "{{ survey_ci_sys_id }}"
-        classname: "Linux Server"
+        classname: "cmdb_ci_linux_server"
       register: ci_relations_info
 
     - name: debug
