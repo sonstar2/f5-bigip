@@ -5,10 +5,18 @@
   gather_facts: false
 
   tasks:
-    - name: Check the status
-      servicenow.itsm.change_request_info:
+
+    - name: Update to assess the change request in ServiceNow
+      servicenow.itsm.change_request:
+        state: assess
         number: "{{ survey_change_number }}"
+        assignment_group: CAB Approval
       register: change_request_status
+      
+    # - name: Check the status
+    #   servicenow.itsm.change_request_info:
+    #     number: "{{ survey_change_number }}"
+    #   register: change_request_status
 
     - name: Wait for Change Request approval
       servicenow.itsm.change_request_info:

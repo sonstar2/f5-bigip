@@ -13,6 +13,6 @@
     - name: Set CI detail
       ansible.builtin.set_stats:
         data:
-          survey_vm_name: "{{ result.name }}"
-          survey_vm_ipaddress: "{{ result.ip_address }}"
+          survey_vm_name: "{{ result.recordes[0].name }}"
+          survey_vm_ipaddress: "{{ result.records[0].ip_address }}"
         aggregate: no
