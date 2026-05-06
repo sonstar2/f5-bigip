@@ -5,15 +5,16 @@
   gather_facts: false
 
   tasks:
-    - name: Update change request
+    - name: Place a change request in ServiceNow in Review
+      servicenow.itsm.change_request:
+        state: review
+        number: "{{ survey_change_number }}"
+      delegate_to: localhost
+
+    - name: Close a change request
       servicenow.itsm.change_request:
         state: closed
         number: "{{ survey_change_number }}"
-        # assignment_group: "{{ assignment_group }}"
         close_code: "successful"
         close_notes: "Closed"
-      register: new_cr
-
-    - name: Show CR details
-      ansible.builtin.debug:
-        var: new_cr.diff.after
+      delegate_to: localhost
