@@ -22,7 +22,8 @@
             job_args:
               extra_vars:
                 survey_action: "add"
-                survey_vm_name: "{{ event.cmdb_ci }}"
+                survey_ci_sys_id: "{{ event.cmdb_ci.value }}"
+                survey_change_number: "{{ event.number }}"
 
     - name: Del BigIP Pool
       condition: event.short_description == "Delete pool"

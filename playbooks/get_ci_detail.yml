@@ -1,0 +1,18 @@
+---
+- name: Close SNow Change Request
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Retrieve a specific configuration item by sys_id
+      servicenow.itsm.configuration_item_info:
+        sys_id: "{{ survey_ci_sys_id }}"
+      register: result
+
+    - name: Set CI detail
+      ansible.builtin.set_stats:
+        data:
+          survey_vm_name: "{{ result.name }}"
+          survey_vm_ipaddress: "{{ result.ip_address }}"
+        aggregate: no
