@@ -10,6 +10,10 @@
         sys_id: "{{ survey_ci_sys_id }}"
       register: result
 
+    - name: debug
+      debug:
+        msg: "{{ result }}"
+
     - name: Set CI detail
       ansible.builtin.set_stats:
         data:
