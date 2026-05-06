@@ -7,8 +7,9 @@
       servicenow.itsm.change_request:
         state: "{{ new_state }}"
         number: "{{ survey_change_number }}"
+        assignment_group: "{{ survey_assignment_group }}"
       register: new_cr
-      
+
     - name: Show CR details
       ansible.builtin.debug:
         var: new_cr.diff.after
