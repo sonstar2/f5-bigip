@@ -30,13 +30,14 @@
       actions:
         - debug:
             var: event
-        - run_job_template:
+        - run_workflow_template:
             organization: "{{ organisation_name }}"
             name: "{{ job_template_name }}"
             job_args:
               extra_vars:
                 survey_action: "delete"
-                survey_vm_name: "{{ event.cmdb_ci }}"
+                survey_ci_sys_id: "{{ event.cmdb_ci.value }}"
+                survey_change_number: "{{ event.number }}"
 
     - name: Debug everything else
       condition: event.cmdb_ci is not defined
