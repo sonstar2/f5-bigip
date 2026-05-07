@@ -20,7 +20,7 @@
 
     - name: Display Change Approval Detail
       ansible.builtin.debug:
-        msg: "You have a new CR Approval request. Please click on this URL to approve: {{ lookup('env', 'SN_HOST') }}nav_to.do?uri=change_request.do?sysparm_query=number={{ change_request_status.record.number }}"
+        msg: "You have a new CR Approval request. Please click on this URL to approve: {{ lookup('env', 'SN_HOST') }}/nav_to.do?uri=change_request.do?sysparm_query=number={{ change_request_status.record.number }}"
 
     - name: Wait for Change Request approval
       servicenow.itsm.change_request_info:
