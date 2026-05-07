@@ -29,5 +29,5 @@
         data:
           survey_vm_name: "{{ ci_info.records[0].name }}"
           survey_vm_address: "{{ ci_info.records[0].ip_address }}"
-          survey_f5_pool_name: "{{ extract_pool_name }}"
+          survey_f5_pool_name: "{{ extract_pool_name[0].target.display_value }}"
         aggregate: no
