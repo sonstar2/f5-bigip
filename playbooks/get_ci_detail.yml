@@ -20,10 +20,14 @@
       debug:
         msg: "{{ ci_relations_info }}"
 
+    - name: Extract Pool Name
+      set_fact:
+        extract_pool_name: "{{ (ci_relations_info.record.inbound_relations | selectattr('type.display_value', 'equalto', 'Distributed by::Distributes')) }}"
+
     - name: Set CI detail
       ansible.builtin.set_stats:
         data:
           survey_vm_name: "{{ ci_info.records[0].name }}"
           survey_vm_address: "{{ ci_info.records[0].ip_address }}"
-          survey_f5_pool_name: "{{ ci_info.records[0].category }}"
+          survey_f5_pool_name: "{{ extract_pool_name }}"
         aggregate: no
